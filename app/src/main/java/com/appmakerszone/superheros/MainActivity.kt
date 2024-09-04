@@ -17,7 +17,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -50,9 +53,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun HeroesApp() {
 
-    LazyColumn {
-        items(HeroesRepository.heroes) {
-            HeroItems(it)
+    Scaffold(
+        topBar = { SuperHeroTopAppBar() }
+    ) { it ->
+        LazyColumn(contentPadding = it) {
+            items(HeroesRepository.heroes) {
+                HeroItems(it)
+            }
         }
     }
 
@@ -74,13 +81,13 @@ fun HeroItems(hero: Hero, modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
 
-                HeroesInformation(
-                    title = hero.nameRes,
-                    description = hero.descriptionRes
-                )
+            HeroesInformation(
+                title = hero.nameRes,
+                description = hero.descriptionRes
+            )
 
 
-                HeroesImage(heroImage = hero.imageRes)
+            HeroesImage(heroImage = hero.imageRes)
 
 
         }
@@ -114,17 +121,40 @@ fun HeroesInformation(
 
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SuperHeroTopAppBar(modifier: Modifier = Modifier) {
+
+    CenterAlignedTopAppBar(
+        modifier = modifier,
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    text = stringResource(R.string.app_name),
+                    style = MaterialTheme.typography.displayLarge
+                )
+            }
+        }
+    )
+
+}
+
 @Composable
 fun HeroesImage(@DrawableRes heroImage: Int, modifier: Modifier = Modifier) {
 
-    Box(modifier = Modifier.size(100.dp).padding(10.dp).padding(end = 6.dp)) {
+    Box(
+        modifier = Modifier
+            .size(100.dp)
+            .padding(10.dp)
+            .padding(end = 6.dp)
+    ) {
         Image(
             painter = painterResource(id = heroImage),
             contentDescription = null,
             modifier = Modifier.clip(Shapes.small),
             contentScale = ContentScale.Crop,
 
-        )
+            )
     }
 }
 
